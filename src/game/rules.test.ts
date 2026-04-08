@@ -7,7 +7,6 @@ import {
   canPlayCard,
   topCard,
   currentPlayer,
-  effectiveTopColor,
 } from "./rules";
 import type { Card, GameState } from "./types";
 
