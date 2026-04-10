@@ -33,17 +33,17 @@ export function hasPlayableCard(player: Player, state: GameState): boolean {
 
 // --- State transitions (all return new GameState, never mutate) ---
 
-export function createGame(playerNames: string[]): GameState {
+export function createGame(players: { id: string; name: string }[]): GameState {
   const deck = shuffle(buildDeck());
-  const players: Player[] = playerNames.map((name, i) => ({
-    id: `player-${i}`,
+  const gamePlayers: Player[] = players.map(({ id, name }) => ({
+    id,
     name,
     hand: [],
   }));
 
   // Deal hands
   let remaining = [...deck];
-  for (const player of players) {
+  for (const player of gamePlayers) {
     player.hand = remaining.splice(0, STARTING_HAND_SIZE);
   }
 
@@ -57,7 +57,7 @@ export function createGame(playerNames: string[]): GameState {
 
   return {
     status: "playing",
-    players,
+    players: gamePlayers,
     deck: remaining,
     discardPile: [firstCard],
     currentPlayerIndex: 0,

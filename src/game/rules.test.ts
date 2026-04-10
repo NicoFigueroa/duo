@@ -136,23 +136,23 @@ describe("canPlayCard", () => {
 
 describe("createGame", () => {
   it("deals 7 cards to each player", () => {
-    const state = createGame(["Alice", "Bob", "Carol"]);
+    const state = createGame([{id:"p0",name:"Alice"},{id:"p1",name:"Bob"},{id:"p2",name:"Carol"}]);
     for (const p of state.players) {
       expect(p.hand).toHaveLength(7);
     }
   });
 
   it("starts with a non-wild top card", () => {
-    const state = createGame(["Alice", "Bob"]);
+    const state = createGame([{id:"p0",name:"Alice"},{id:"p1",name:"Bob"}]);
     expect(topCard(state).color).not.toBe("wild");
   });
 
   it("sets status to playing", () => {
-    expect(createGame(["A", "B"]).status).toBe("playing");
+    expect(createGame([{id:"p0",name:"A"},{id:"p1",name:"B"}]).status).toBe("playing");
   });
 
   it("starts with player 0", () => {
-    expect(createGame(["A", "B"]).currentPlayerIndex).toBe(0);
+    expect(createGame([{id:"p0",name:"A"},{id:"p1",name:"B"}]).currentPlayerIndex).toBe(0);
   });
 });
 
@@ -160,7 +160,7 @@ describe("createGame", () => {
 
 describe("playCard", () => {
   it("ignores plays out of turn", () => {
-    const state = createGame(["Alice", "Bob"]);
+    const state = createGame([{id:"p0",name:"Alice"},{id:"p1",name:"Bob"}]);
     const bobId = state.players[1].id;
     const bobCard = state.players[1].hand[0];
     const next = playCard(state, bobId, bobCard.id);
@@ -261,7 +261,7 @@ describe("playCard", () => {
 
 describe("drawCard", () => {
   it("adds a card to the current player's hand", () => {
-    const state = createGame(["Alice", "Bob"]);
+    const state = createGame([{id:"p0",name:"Alice"},{id:"p1",name:"Bob"}]);
     const before = currentPlayer(state).hand.length;
     const next = drawCard(state, state.players[0].id);
     expect(currentPlayer(next).hand.length).toBe(before); // turn advanced
@@ -269,13 +269,13 @@ describe("drawCard", () => {
   });
 
   it("advances the turn", () => {
-    const state = createGame(["Alice", "Bob"]);
+    const state = createGame([{id:"p0",name:"Alice"},{id:"p1",name:"Bob"}]);
     const next = drawCard(state, state.players[0].id);
     expect(next.currentPlayerIndex).toBe(1);
   });
 
   it("ignores draw out of turn", () => {
-    const state = createGame(["Alice", "Bob"]);
+    const state = createGame([{id:"p0",name:"Alice"},{id:"p1",name:"Bob"}]);
     const next = drawCard(state, state.players[1].id);
     expect(next).toBe(state);
   });

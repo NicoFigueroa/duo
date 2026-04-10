@@ -13,7 +13,6 @@
 @theme {
   --animate-float-slow: float-slow 8s ease-in-out infinite;
   --animate-float-medium: float-medium 6s ease-in-out infinite;
-  --color-background: #12082a;
 }
 
 body {

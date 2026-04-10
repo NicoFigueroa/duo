@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { useParty } from "../hooks/useParty";
+import type { RosterEntry } from "../game/messages";
 
 interface Props {
-  name: string;
+  myId: string | null;
+  hostId: string | null;
+  roster: RosterEntry[];
   roomId: string;
   onStartGame: () => void;
 }
 
-// Cycles through the 4 UNO colors for player avatars
 const AVATAR_COLORS = [
   { bg: "bg-red-500", text: "text-white" },
   { bg: "bg-blue-500", text: "text-white" },
@@ -35,8 +36,7 @@ function UnoLogo() {
   );
 }
 
-export function Lobby({ name, roomId, onStartGame }: Props) {
-  const { myId, hostId, roster } = useParty(roomId, name);
+export function Lobby({ myId, hostId, roster, roomId, onStartGame }: Props) {
   const [copied, setCopied] = useState(false);
 
   const isHost = myId !== null && myId === hostId;
@@ -87,7 +87,7 @@ export function Lobby({ name, roomId, onStartGame }: Props) {
           }}
         >
           <p className="text-white/40 text-xs uppercase tracking-widest mb-1">Room Code</p>
-          <p className="text-4xl font-mono font-black tracking-widest text-white">{roomId}</p>
+          <p className="text-4xl font-mono font-black tracking-widest text-white">{roomId || "—"}</p>
           <p className="text-white/30 text-xs mt-1.5 group-hover:text-white/50 transition-colors">
             {copied ? "Copied to clipboard!" : "Tap to copy · Share with friends"}
           </p>

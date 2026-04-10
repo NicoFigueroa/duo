@@ -13,6 +13,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.2.2",
     "autoprefixer": "^10.4.27",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
