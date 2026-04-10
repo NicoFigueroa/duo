@@ -1,0 +1,60 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+# Required for GitHub Pages OIDC deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deployment runs at a time; don't cancel in-flight deploys
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy-pages.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Test
+        run: npm test
+
+      - name: Deploy PartyKit server
+        run: npx partykit deploy
+        env:
+          PARTYKIT_TOKEN: ${{ secrets.PARTYKIT_TOKEN }}
+          PARTYKIT_LOGIN: ${{ secrets.PARTYKIT_LOGIN }}
+
+      - name: Build frontend
+        # BASE_PATH defaults to /uno-ripoff/ for GitHub Pages subdirectory hosting.
+        # Override with vars.BASE_PATH=/ if you use a custom domain.
+        run: npx tsc && npx vite build --base="${BASE_PATH:-/uno-ripoff/}"
+        env:
+          BASE_PATH: ${{ vars.BASE_PATH }}
+          VITE_PARTYKIT_HOST: ${{ vars.VITE_PARTYKIT_HOST }}
+
+      - uses: actions/configure-pages@v4
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Deploy to GitHub Pages
+        id: deploy-pages
+        uses: actions/deploy-pages@v4
